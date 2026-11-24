@@ -84,7 +84,7 @@ function Contact() {
         <form className="contact-form card reveal d1" onSubmit={sendMessage}>
           <label>
             <span>Your Name</span>
-            <input type="text" name="name" placeholder="Juan Dela Cruz" required />
+            <input type="text" name="name" placeholder="Your Name here" required />
           </label>
 
           <label>

@@ -1,18 +1,6 @@
-import { useState } from 'react'
-import { PROJECTS, PROJECT_FILTERS } from '../data/content'
+import { PROJECTS } from '../data/content'
 
 function Projects() {
-  const [openProject, setOpenProject] = useState(null)
-  const [filter, setFilter] = useState('All')
-
-  const visible = PROJECTS.filter(
-    (p) => filter === 'All' || p.category === filter
-  )
-
-  const toggleProject = (id) => {
-    setOpenProject(openProject === id ? null : id)
-  }
-
   // Makes the glow on a card follow the mouse
   const trackMouse = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -31,79 +19,35 @@ function Projects() {
         </p>
       </div>
 
-      <div className="filters reveal" role="tablist" aria-label="Filter projects">
-        {PROJECT_FILTERS.map((f) => (
-          <button
-            key={f}
-            type="button"
-            role="tab"
-            aria-selected={filter === f}
-            className={filter === f ? 'active' : ''}
-            onClick={() => {
-              setFilter(f)
-              setOpenProject(null)
-            }}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
       <div className="project-grid">
-        {visible.map((p) => {
-          const isOpen = openProject === p.id
+        {PROJECTS.map((p) => (
+          <article
+            key={p.id}
+            className="project-card spotlight reveal"
+            onMouseMove={trackMouse}
+          >
+            <div className="project-top">
+              <span className="project-number">
+                {String(p.id).padStart(2, '0')}
+              </span>
+              <span className="project-category">{p.category}</span>
+            </div>
 
-          return (
-            <article
-              key={p.id}
-              className={`project-card spotlight reveal ${isOpen ? 'open' : ''}`}
-              onMouseMove={trackMouse}
-            >
-              <div className="project-top">
-                <span className="project-number">
-                  {String(p.id).padStart(2, '0')}
-                </span>
-                <span className="project-category">{p.category}</span>
-              </div>
+            <h3>{p.title}</h3>
+            <p className="project-summary">{p.summary}</p>
 
-              <h3>{p.title}</h3>
-              <p className="project-summary">{p.summary}</p>
+            <div className="tags">
+              {p.tags.map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </div>
 
-              <div className="tags">
-                {p.tags.map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
-              </div>
-
-              <p className="project-author">
-                {p.authors.length > 1 ? 'Authors' : 'Author'}:{' '}
-                {p.authors.join(' & ')}
-              </p>
-
-              <button
-                className="details-btn"
-                type="button"
-                onClick={() => toggleProject(p.id)}
-                aria-expanded={isOpen}
-              >
-                {isOpen ? 'Hide details' : 'View details'}
-                <span aria-hidden="true">{isOpen ? '↑' : '→'}</span>
-              </button>
-
-              {/* Expanding panel: height is animated with a CSS grid trick */}
-              <div className="details-wrap">
-                <div className="details-inner">
-                  <h4>Project Overview</h4>
-                  <p>{p.summary}</p>
-                  <h4>Technology</h4>
-                  <p>{p.tags.join(' · ')}</p>
-                  <h4>{p.authors.length > 1 ? 'Authors' : 'Author'}</h4>
-                  <p>{p.authors.join(' & ')}</p>
-                </div>
-              </div>
-            </article>
-          )
-        })}
+            <p className="project-author">
+              {p.authors.length > 1 ? 'Authors' : 'Author'}:{' '}
+              {p.authors.join(' & ')}
+            </p>
+          </article>
+        ))}
       </div>
     </section>
   )

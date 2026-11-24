@@ -51,7 +51,25 @@ function Header() {
     }
   }, [menuOpen])
 
+  // Close the mobile menu with the Escape key, or when the window becomes desktop-sized
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    const onResize = () => {
+      if (window.innerWidth > 820) setMenuOpen(false)
+    }
+
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
   return (
+    <>
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <a href="#home" className="brand" onClick={() => setMenuOpen(false)}>
         <img src={mark} alt="" className="brand-mark" />
@@ -60,7 +78,7 @@ function Header() {
         </span>
       </a>
 
-      <nav className={`nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
+      <nav id="main-nav" className={`nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
         {NAV_LINKS.map(({ id, label }) => (
           <a
             key={id}
@@ -88,14 +106,21 @@ function Header() {
           className={`menu-toggle ${menuOpen ? 'open' : ''}`}
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
+          aria-controls="main-nav"
         >
           <span />
           <span />
         </button>
       </div>
     </header>
+
+    {/* Tapping outside the menu closes it (only shown while the menu is open on mobile) */}
+    {menuOpen && (
+      <div className="nav-backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />
+    )}
+    </>
   )
 }
 
