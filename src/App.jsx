@@ -6,31 +6,37 @@ import About from './pages/About'
 import Projects from './pages/Projects'
 import Members from './pages/Members'
 import Contact from './pages/Contact'
+import useReveal from './hooks/useReveal'
 
 function App() {
   const [showTopButton, setShowTopButton] = useState(false)
+  const [progress, setProgress] = useState(0)
 
+  // Scroll reveal animations
+  useReveal()
+
+  // Track scroll position for the progress bar and back-to-top button
   useEffect(() => {
     const handleScroll = () => {
-      setShowTopButton(window.scrollY > 400)
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(max > 0 ? (window.scrollY / max) * 100 : 0)
+      setShowTopButton(window.scrollY > 500)
     }
 
-    window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const backToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <div>
+    <div className="app">
+      <div className="scroll-progress" style={{ width: `${progress}%` }} />
+      <div className="bg-grid" aria-hidden="true" />
+
       <Header />
 
       <main>
@@ -43,17 +49,15 @@ function App() {
 
       <Footer />
 
-      {showTopButton && (
-        <button
-          className="back-to-top"
-          type="button"
-          onClick={backToTop}
-          aria-label="Back to top"
-          title="Back to top"
-        >
-          ↑
-        </button>
-      )}
+      <button
+        className={`back-to-top ${showTopButton ? 'show' : ''}`}
+        type="button"
+        onClick={backToTop}
+        aria-label="Back to top"
+        title="Back to top"
+      >
+        ↑
+      </button>
     </div>
   )
 }

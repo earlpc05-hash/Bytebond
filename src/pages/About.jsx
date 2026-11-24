@@ -1,51 +1,46 @@
+import { ABOUT } from '../data/content'
+
 function About() {
   return (
-    <section id="about" className="about">
-      <div className="section-heading">
-        <p className="section-label">WHO WE ARE</p>
-        <h1>About ByteBond</h1>
+    <section id="about" className="section about">
+      <div className="section-heading reveal">
+        <p className="section-label">01 / Who we are</p>
+        <h2>About ByteBond</h2>
         <p>
-          A small organization built around learning, connection,
-          and growing together.
+          A small organization built around learning, connection, and
+          growing together.
         </p>
       </div>
 
-      <div className="about-grid">
-        <div className="about-card">
-          <h2>Why We Started</h2>
-          <p>
-            ByteBond started from a shared interest in programming,
-            technology, and learning together. We wanted to create
-            a space where ideas can be shared and explored.
-          </p>
-        </div>
+      {/* Bento grid: the first card is wide, the values card spans two rows */}
+      <div className="bento">
+        <article className="card bento-why reveal">
+          <span className="card-icon">01</span>
+          <h3>Why We Started</h3>
+          <p>{ABOUT.why}</p>
+        </article>
 
-        <div className="about-card">
-          <h2>Our Mission</h2>
-          <p>
-            Our mission is to learn, collaborate, experiment, and
-            develop our skills as aspiring IT professionals.
-          </p>
-        </div>
-
-        <div className="about-card">
-          <h2>Our Vision</h2>
-          <p>
-            We aim to grow together by turning what we learn into
-            creative and meaningful ideas.
-          </p>
-        </div>
-
-        <div className="about-card">
-          <h2>Our Values</h2>
-          <ul>
-            <li>Connection</li>
-            <li>Collaboration</li>
-            <li>Curiosity</li>
-            <li>Growth</li>
-            <li>Creativity</li>
+        <article className="card bento-values reveal d1">
+          <span className="card-icon">04</span>
+          <h3>Our Values</h3>
+          <ul className="chips">
+            {ABOUT.values.map((v) => (
+              <li key={v}>{v}</li>
+            ))}
           </ul>
-        </div>
+        </article>
+
+        <article className="card reveal d1">
+          <span className="card-icon">02</span>
+          <h3>Our Mission</h3>
+          <p>{ABOUT.mission}</p>
+        </article>
+
+        <article className="card reveal d2">
+          <span className="card-icon">03</span>
+          <h3>Our Vision</h3>
+          <p>{ABOUT.vision}</p>
+        </article>
       </div>
     </section>
   )

@@ -1,338 +1,109 @@
 import { useState } from 'react'
+import { PROJECTS, PROJECT_FILTERS } from '../data/content'
 
 function Projects() {
   const [openProject, setOpenProject] = useState(null)
+  const [filter, setFilter] = useState('All')
 
-  const toggleProject = (projectNumber) => {
-    setOpenProject(
-      openProject === projectNumber ? null : projectNumber
-    )
+  const visible = PROJECTS.filter(
+    (p) => filter === 'All' || p.category === filter
+  )
+
+  const toggleProject = (id) => {
+    setOpenProject(openProject === id ? null : id)
+  }
+
+  // Makes the glow on a card follow the mouse
+  const trackMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`)
   }
 
   return (
-    <section id="projects" className="projects">
-      <div className="section-heading">
-        <p className="section-label">WHAT WE BUILD</p>
-
-        <h1>Projects & Activities</h1>
-
+    <section id="projects" className="section projects">
+      <div className="section-heading reveal">
+        <p className="section-label">02 / What we build</p>
+        <h2>Projects &amp; Activities</h2>
         <p>
-          A collection of our programming projects and activities
-          created while learning and developing our skills.
+          A collection of our programming projects and activities created
+          while learning and developing our skills.
         </p>
       </div>
 
+      <div className="filters reveal" role="tablist" aria-label="Filter projects">
+        {PROJECT_FILTERS.map((f) => (
+          <button
+            key={f}
+            type="button"
+            role="tab"
+            aria-selected={filter === f}
+            className={filter === f ? 'active' : ''}
+            onClick={() => {
+              setFilter(f)
+              setOpenProject(null)
+            }}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
       <div className="project-grid">
+        {visible.map((p) => {
+          const isOpen = openProject === p.id
 
-        <div className="project-card">
-          <div className="project-number">01</div>
-
-          <div className="project-content">
-            <h2>Library Management System</h2>
-
-            <p>
-              A Python-based library management system created
-              to practice programming concepts and system development.
-            </p>
-
-            <span className="project-status">PYTHON</span>
-            <span className="project-link">Library System</span>
-
-            <p className="project-author">
-              Author: Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(1)}
+          return (
+            <article
+              key={p.id}
+              className={`project-card spotlight reveal ${isOpen ? 'open' : ''}`}
+              onMouseMove={trackMouse}
             >
-              {openProject === 1
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 1 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  A library management project created using
-                  Python to practice programming and system
-                  development concepts.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>Python</p>
-
-                <h3>Author</h3>
-
-                <p>Azumi Gajutos</p>
+              <div className="project-top">
+                <span className="project-number">
+                  {String(p.id).padStart(2, '0')}
+                </span>
+                <span className="project-category">{p.category}</span>
               </div>
-            )}
-          </div>
-        </div>
 
+              <h3>{p.title}</h3>
+              <p className="project-summary">{p.summary}</p>
 
-        <div className="project-card">
-          <div className="project-number">02</div>
-
-          <div className="project-content">
-            <h2>Bank Account Encapsulation</h2>
-
-            <p>
-              A Python OOP project demonstrating encapsulation
-              through a simple bank account program.
-            </p>
-
-            <span className="project-status">OOPROG</span>
-            <span className="project-link">Python</span>
-
-            <p className="project-author">
-              Authors: Earl Kenneth Panuncial & Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(2)}
-            >
-              {openProject === 2
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 2 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  An OOPROG project created to demonstrate
-                  encapsulation using a simple bank account program.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>Python</p>
-
-                <h3>Authors</h3>
-
-                <p>
-                  Earl Kenneth Panuncial & Azumi Gajutos
-                </p>
+              <div className="tags">
+                {p.tags.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
               </div>
-            )}
-          </div>
-        </div>
 
+              <p className="project-author">
+                {p.authors.length > 1 ? 'Authors' : 'Author'}:{' '}
+                {p.authors.join(' & ')}
+              </p>
 
-        <div className="project-card">
-          <div className="project-number">03</div>
+              <button
+                className="details-btn"
+                type="button"
+                onClick={() => toggleProject(p.id)}
+                aria-expanded={isOpen}
+              >
+                {isOpen ? 'Hide details' : 'View details'}
+                <span aria-hidden="true">{isOpen ? '↑' : '→'}</span>
+              </button>
 
-          <div className="project-content">
-            <h2>Text Extractor</h2>
-
-            <p>
-              A Python project that extracts text from images
-              using optical character recognition.
-            </p>
-
-            <span className="project-status">PYTHON</span>
-            <span className="project-link">OCR</span>
-
-            <p className="project-author">
-              Authors: Earl Kenneth Panuncial & Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(3)}
-            >
-              {openProject === 3
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 3 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  A Python project that uses OCR technology
-                  to extract text from images.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>Python · OCR</p>
-
-                <h3>Authors</h3>
-
-                <p>
-                  Earl Kenneth Panuncial & Azumi Gajutos
-                </p>
+              {/* Expanding panel: height is animated with a CSS grid trick */}
+              <div className="details-wrap">
+                <div className="details-inner">
+                  <h4>Project Overview</h4>
+                  <p>{p.summary}</p>
+                  <h4>Technology</h4>
+                  <p>{p.tags.join(' · ')}</p>
+                  <h4>{p.authors.length > 1 ? 'Authors' : 'Author'}</h4>
+                  <p>{p.authors.join(' & ')}</p>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-
-
-        <div className="project-card">
-          <div className="project-number">04</div>
-
-          <div className="project-content">
-            <h2>Pixel Maker</h2>
-
-            <p>
-              A Python image project that creates a
-              pixel-style version of an image.
-            </p>
-
-            <span className="project-status">PYTHON</span>
-            <span className="project-link">
-              Image Processing
-            </span>
-
-            <p className="project-author">
-              Authors: Earl Kenneth Panuncial & Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(4)}
-            >
-              {openProject === 4
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 4 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  A Python image-processing project that
-                  transforms images into a pixel-style appearance.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>Python · Image Processing</p>
-
-                <h3>Authors</h3>
-
-                <p>
-                  Earl Kenneth Panuncial & Azumi Gajutos
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-
-        <div className="project-card">
-          <div className="project-number">05</div>
-
-          <div className="project-content">
-            <h2>Background Remover</h2>
-
-            <p>
-              A Python project that processes images
-              and removes their backgrounds.
-            </p>
-
-            <span className="project-status">PYTHON</span>
-            <span className="project-link">
-              Image Processing
-            </span>
-
-            <p className="project-author">
-              Authors: Earl Kenneth Panuncial & Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(5)}
-            >
-              {openProject === 5
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 5 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  A Python project designed to process an image
-                  and remove its background.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>Python · Image Processing</p>
-
-                <h3>Authors</h3>
-
-                <p>
-                  Earl Kenneth Panuncial & Azumi Gajutos
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-
-        <div className="project-card">
-          <div className="project-number">06</div>
-
-          <div className="project-content">
-            <h2>Personal Portfolio</h2>
-
-            <p>
-              A personal portfolio created for PLTECH using
-              HTML, featuring GitHub and social media connections.
-            </p>
-
-            <span className="project-status">PLTECH</span>
-            <span className="project-link">HTML</span>
-
-            <p className="project-author">
-              Authors: Earl Kenneth Panuncial & Azumi Gajutos
-            </p>
-
-            <button
-              className="project-details-button"
-              onClick={() => toggleProject(6)}
-            >
-              {openProject === 6
-                ? 'Hide Details ↑'
-                : 'View Details →'}
-            </button>
-
-            {openProject === 6 && (
-              <div className="project-details">
-                <h3>Project Overview</h3>
-
-                <p>
-                  A personal portfolio created for PLTECH
-                  using HTML, with GitHub and social media
-                  connections.
-                </p>
-
-                <h3>Technology</h3>
-
-                <p>HTML</p>
-
-                <h3>Authors</h3>
-
-                <p>
-                  Earl Kenneth Panuncial & Azumi Gajutos
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
+            </article>
+          )
+        })}
       </div>
     </section>
   )

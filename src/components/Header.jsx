@@ -1,34 +1,79 @@
 import { useEffect, useState } from 'react'
-import logo from '../assets/ByteBondLogo.jpg'
+import mark from '../assets/bytebond-mark.jpg'
+import { NAV_LINKS } from '../data/content'
 
 function Header() {
   const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('bytebond-theme')
-    return savedMode !== 'light'
+    return localStorage.getItem('bytebond-theme') !== 'light'
   })
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [active, setActive] = useState('home')
 
+  // Apply and save the theme
   useEffect(() => {
     document.body.classList.toggle('light-mode', !darkMode)
-
-    localStorage.setItem(
-      'bytebond-theme',
-      darkMode ? 'dark' : 'light'
-    )
+    localStorage.setItem('bytebond-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
 
+  // Shrink the header after scrolling
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Highlight the nav link of the section currently on screen
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id)
+        })
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    )
+
+    NAV_LINKS.forEach(({ id }) => {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  // Lock page scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
   return (
-    <header className="header">
-      <a href="#home" className="logo">
-        <img src={logo} alt="ByteBond Logo" />
+    <header className={`header ${scrolled ? 'scrolled' : ''}`}>
+      <a href="#home" className="brand" onClick={() => setMenuOpen(false)}>
+        <img src={mark} alt="" className="brand-mark" />
+        <span className="brand-name">
+          Byte<span>Bond</span>
+        </span>
       </a>
 
-      <nav className="nav">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#members">Members</a>
-        <a href="#contact">Contact</a>
+      <nav className={`nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
+        {NAV_LINKS.map(({ id, label }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className={active === id ? 'active' : ''}
+            onClick={() => setMenuOpen(false)}
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
 
+      <div className="header-actions">
         <button
           className="theme-toggle"
           type="button"
@@ -38,7 +83,18 @@ function Header() {
         >
           {darkMode ? '☀' : '☾'}
         </button>
-      </nav>
+
+        <button
+          className={`menu-toggle ${menuOpen ? 'open' : ''}`}
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span />
+          <span />
+        </button>
+      </div>
     </header>
   )
 }

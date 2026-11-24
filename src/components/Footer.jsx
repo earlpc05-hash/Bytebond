@@ -1,17 +1,27 @@
+import mark from '../assets/bytebond-mark.jpg'
+import { NAV_LINKS } from '../data/content'
+
 function Footer() {
   return (
     <footer className="footer">
-      <div>
-        <h2>ByteBond</h2>
-        <p>Connecting Ideas. Building Together.</p>
-      </div>
+      <div className="footer-inner">
+        <div className="footer-brand">
+          <a href="#home" className="brand">
+            <img src={mark} alt="" className="brand-mark" />
+            <span className="brand-name">
+              Byte<span>Bond</span>
+            </span>
+          </a>
+          <p>Connecting Ideas. Building Together.</p>
+        </div>
 
-      <div className="footer-links">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#members">Members</a>
-        <a href="#contact">Contact</a>
+        <nav className="footer-links" aria-label="Footer navigation">
+          {NAV_LINKS.map(({ id, label }) => (
+            <a key={id} href={`#${id}`}>
+              {label}
+            </a>
+          ))}
+        </nav>
       </div>
 
       <p className="footer-copy">

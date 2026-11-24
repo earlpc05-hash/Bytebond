@@ -1,85 +1,64 @@
 import earlProfile from '../assets/members/earlprof.jpg'
 import azumiProfile from '../assets/members/azumiprof.jpg'
+import { MEMBERS } from '../data/content'
+
+// Match each member id to its imported photo
+const PHOTOS = { earl: earlProfile, azumi: azumiProfile }
 
 function Members() {
   return (
-    <section id="members" className="members">
-      <div className="section-heading">
-        <p className="section-label">THE PEOPLE BEHIND BYTEBOND</p>
-
-        <h1>Our Members</h1>
-
-        <p>
-          Two aspiring developers learning, creating, and growing
-          together.
-        </p>
+    <section id="members" className="section members">
+      <div className="section-heading reveal">
+        <p className="section-label">03 / The people behind ByteBond</p>
+        <h2>Our Members</h2>
+        <p>Two aspiring developers learning, creating, and growing together.</p>
       </div>
 
       <div className="members-grid">
-
-        <div className="member-card">
-          <div className="member-number">01</div>
-
-          <img
-            src={earlProfile}
-            alt="Earl Kenneth Panuncial"
-            className="member-profile"
-          />
-
-          <a href="#contact-earl" className="member-name-link">
-            <h2>Earl Kenneth Panuncial</h2>
-          </a>
-
-          <h3>Aspiring Game & Web Developer</h3>
-
-          <p>
-            Interested in game development, web development,
-            and programming.
-          </p>
-
-          <p>
-            <strong>Skills:</strong> Problem-solving, basic software
-            development, web development, creative thinking,
-            programming fundamentals, and team collaboration.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong> Python, JavaScript, HTML, CSS.
-          </p>
+        {/* The "bond" between the two cards (desktop only) */}
+        <div className="bond-line" aria-hidden="true">
+          <span />
         </div>
 
-        <div className="member-card">
-          <div className="member-number">02</div>
+        {MEMBERS.map((m, i) => (
+          <article key={m.id} className={`member-card reveal d${i + 1}`}>
+            <span className="member-number">{m.number}</span>
 
-          <img
-            src={azumiProfile}
-            alt="Azumi Gajutos"
-            className="member-profile"
-          />
+            <div className="avatar">
+              <img src={PHOTOS[m.id]} alt={m.name} />
+            </div>
 
-          <a href="#contact-azumi" className="member-name-link">
-            <h2>Azumi Gajutos</h2>
-          </a>
+            <a href={`#contact-${m.id}`} className="member-name-link">
+              <h3>{m.name}</h3>
+            </a>
+            <p className="member-role">{m.role}</p>
 
-          <h3>Aspiring Web Developer</h3>
+            <p className="member-bio">{m.bio}</p>
 
-          <p>
-            Interested in programming, technology, learning,
-            coding, and problem-solving.
-          </p>
+            <div className="member-block">
+              <h4>Skills</h4>
+              <p>{m.skills}</p>
+            </div>
 
-          <p>
-            <strong>Skills:</strong> Basic web development,
-            problem-solving, web design, creative thinking,
-            programming fundamentals, and collaboration.
-          </p>
+            <div className="member-block">
+              <h4>Technologies</h4>
+              <div className="tags">
+                {m.tech.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </div>
+            </div>
 
-          <p>
-            <strong>Technologies:</strong> HTML, CSS, Python,
-            Basic JavaScript.
-          </p>
-        </div>
-
+            <div className="member-links">
+              <a href={m.github} target="_blank" rel="noopener noreferrer">
+                GitHub ↗
+              </a>
+              <a href={m.facebook} target="_blank" rel="noopener noreferrer">
+                Facebook ↗
+              </a>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   )
